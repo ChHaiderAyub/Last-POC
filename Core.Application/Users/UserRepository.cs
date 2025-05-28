@@ -128,7 +128,7 @@ namespace Core.Application.Users
             try
             {
                 var users = _repositoryContext.Users.Select(u=>new AllUsers
-                {
+                {   Id = u.Id,
                     Name = u.Name,
                    Role = u.Role,
                 }).ToList();
@@ -153,6 +153,92 @@ namespace Core.Application.Users
 
 
         }
+
+        public PayloadCustom<User> UserDetails(Guid Id)
+        {
+            try
+            {
+                var users = _repositoryContext.Users.FirstOrDefault(u => u.Id == Id);
+                return new PayloadCustom<User>
+                {
+                    Entity = users,
+                    Status = (int)HttpStatusCode.OK,
+                    Message = "Details ",
+                };
+            }
+            catch(Exception ex )
+            {
+                return new PayloadCustom<User>
+                {
+                    Status = (int)HttpStatusCode.InternalServerError,
+                    Message = "An error occurred: " + (ex.InnerException?.Message ?? ex.Message)
+
+                };
+            }
+        }
+
+
+
+        public PayloadCustom<User> DeleteUser(Guid id)
+        {
+            var user = _repositoryContext.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return new PayloadCustom<User>
+                {
+                    Success = false,
+                    Message = "User not found"
+                };
+            }
+
+            _repositoryContext.Users.Remove(user);
+            _repositoryContext.SaveChanges();
+
+            return new PayloadCustom<User>
+            {
+                Success = true,
+                Message = "User deleted successfully",
+                Entity = user
+            };
+        }
+
+
+        public PayloadCustom<List<UsersRole>> GetUsersByRole(string role)
+        {
+            try
+            {
+                var users = _repositoryContext.Users
+                    .AsEnumerable()
+                    .Where(u => u.Role.ToString().ToLower() == role.ToLower())
+                    .Select(u => new UsersRole
+                    {
+                        Id = u.Id,
+                        Name = u.Name,
+                        Email = u.Email,
+                        PhoneNumber = u.PhoneNumber
+                    })
+                    .ToList();
+
+                return new PayloadCustom<List<UsersRole>> // ✅ now types match
+                {
+                    Entity = users,
+                    Status = (int)HttpStatusCode.OK,
+                    Message = "Users fetched successfully."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new PayloadCustom<List<UsersRole>>
+                {
+                    Status = (int)HttpStatusCode.InternalServerError,
+                    Message = "An error occurred: " + (ex.InnerException?.Message ?? ex.Message)
+                };
+            }
+        }
+
+
+
 
 
 

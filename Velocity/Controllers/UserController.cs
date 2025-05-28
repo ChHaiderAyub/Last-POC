@@ -44,7 +44,24 @@ namespace Velocity.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public PayloadCustom<User>UserDetails(Guid id)
+        {
+            return _repository.User.UserDetails(id);
+        }
 
+        [HttpDelete("{id}")]
+        public PayloadCustom<User>DeleteUser(Guid id)
+        {
+            return _repository.User.DeleteUser(id);
+        }
+
+
+        [HttpGet("GetUsersByRole/{role}")]
+        public PayloadCustom<List<UsersRole>> GetUsersByRole(string role)
+        {
+            return _repository.User.GetUsersByRole(role);
+        }
 
     }
 }

@@ -17,7 +17,20 @@ export const LogInUserApi = async (values: LogInFormValues) => {
   });
 };
 
-// ✅ Make sure THIS function exists and is exported:
 export const GetAllUsersApi = async () => {
   return axios.get(`${baseURL}api/User/GetAllUsers`);
 };
+
+export const GetUserDetailsApi = (id: string) => {
+  return axios.get(`${baseURL}api/User/${id}`);
+};
+
+export const DeleteUserApi = (id: string) => {
+  return axios.delete(`${baseURL}api/User/${id}`);
+};
+
+// ✅ NEW: Get users by role
+export const GetUsersByRoleApi = (role: string) => {
+  return axios.get(`${baseURL}api/User/GetUsersByRole/${role}`);
+};
+

@@ -53,3 +53,8 @@ export const LogInSchema=Yup.object<any>().shape<any>({
   email:Yup.string().email("Invalid email").required("Email is required"),
   password:Yup.string().required("Password is required")
 })
+export interface User {
+  id: string;
+  name: string;
+  role: number;
+}
